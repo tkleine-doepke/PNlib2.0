@@ -72,7 +72,7 @@ package PNlib2
               fillPattern=FillPattern.Solid)}));
     end PlaceIn;
   end Interfaces;
-  annotation (uses(Modelica(version="3.2.1"), PNlib(version="1.1")));
+
   package DiskretComponents
     model PD "Discrete Place "
       discrete Real t(start = startTokens) "marking";
@@ -566,24 +566,19 @@ contains blocks with specific procedures that are used in the Petri net componen
       Integer nTAout "number of active output transitions";
       Integer posTE "possible enabled transition";
     algorithm
+      TEout := fill(false, nOut);
       when delayPassed or activeCon then
-          if nOut>0 then
-            TEout:=fill(false,nOut);
+        if nOut > 0 then
           arcWeightSum := PNlib.Functions.OddsAndEnds.conditionalSum(arcWeight,
-            TAout);                                                                    //arc weight sum of all active output transitions
-              if (t - arcWeightSum >= minTokens) then  //Place has no actual conflict; all active output transitions are enabled
-                TEout:=TAout;
-              end if;
-          else
-            TEout:=fill(false, nOut);
-            remTAout:=fill(0, nOut);
-            arcWeightSum:=0;
-            nremTAout:=0;
-            nTAout:=0;
-            posTE:=0;
+            TAout);
+          //arc weight sum of all active output transitions
+          if (t - arcWeightSum >= minTokens) then
+            //Place has no actual conflict; all active output transitions are enabled
+            TEout := TAout;
           end if;
+        end if;
       end when;
-      TEout_:=TEout and TAout;
+      TEout_ := TEout and TAout;
     end enablingOutDis;
 
     block firingSumDis "calculates the firing sum of discrete places"
@@ -970,4 +965,5 @@ to the original vector are given, such that sorted_v = v[indices].
       end testOK;
     end OddsAndEnds;
   end Functions;
+  annotation (uses(Modelica(version="3.2.1"), PNlib(version="1.1")));
 end PNlib2;
