@@ -557,14 +557,9 @@ contains blocks with specific procedures that are used in the Petri net componen
       input Boolean TAout[:] "active output transitions with passed delay";
       input Boolean delayPassed "Does any delayPassed of a output transition";
       input Boolean activeCon "change of activation of output transitions";
-      output Boolean TEout_[nOut] "enabled output transitions";
+      output Boolean TEout[nOut] "enabled output transitions";
     protected
-      Boolean TEout[nOut] "enabled output transitions";
-      Integer remTAout[nOut] "remaining active output transitions";
       Real arcWeightSum "arc weight sum";
-      Integer nremTAout "number of remaining active output transitions";
-      Integer nTAout "number of active output transitions";
-      Integer posTE "possible enabled transition";
     algorithm
       TEout := fill(false, nOut);
       when delayPassed or activeCon then
@@ -578,7 +573,7 @@ contains blocks with specific procedures that are used in the Petri net componen
           end if;
         end if;
       end when;
-      TEout_ := TEout and TAout;
+      TEout := TEout and TAout;
     end enablingOutDis;
 
     block firingSumDis "calculates the firing sum of discrete places"
